@@ -10,15 +10,14 @@ SCREEN_HEIGHT = 768
 SCREEN_TITLE = "Samurai"
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """
     Main application class.
     """
 
     def __init__(self):
-
         # Call the parent class and set up the window
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
 
         arcade.set_background_color(arcade.color.WHITE)
 
@@ -34,9 +33,10 @@ class MyGame(arcade.Window):
 
 
 def main():
-    """Main function"""
-    window = MyGame()
-    window.setup()
+    """Startup"""
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    game_view = GameView()
+    window.show_view(game_view)
     arcade.run()
 
 
