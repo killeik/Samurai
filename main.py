@@ -10,11 +10,11 @@ SCREEN_WIDTH = 1366
 SCREEN_HEIGHT = 768
 SCREEN_TITLE = "Samurai"
 
-CHARACTER_SCALING = 1.3
+CHARACTER_SCALING = 2
 
 # How fast to move, and how fast to run the animation
-MOVEMENT_SPEED = 5
-UPDATES_PER_FRAME = 8
+MOVEMENT_SPEED = 6
+UPDATES_PER_FRAME = 5
 
 # Constants used to track if the player is facing left or right
 RIGHT_FACING = 0
@@ -86,10 +86,10 @@ class PlayerCharacter(arcade.Sprite):
 
             self.cur_walk_texture += 1
 
-            if self.cur_walk_texture > 3 * UPDATES_PER_FRAME:
+            if self.cur_walk_texture > 3 * (UPDATES_PER_FRAME * 2):
                 self.cur_walk_texture = 0
 
-            frame = self.cur_walk_texture // UPDATES_PER_FRAME
+            frame = self.cur_walk_texture // (UPDATES_PER_FRAME * 2)
 
             direction = self.character_face_direction
 
@@ -208,7 +208,7 @@ class GameView(arcade.View):
         self.clear()
 
         # Draw all the sprites.
-        self.player_list.draw()
+        self.player_list.draw(pixelated=True)
 
     def on_key_press(self, key, modifiers):
         """
