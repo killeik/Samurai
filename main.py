@@ -5,7 +5,6 @@ Samurai Game
 import arcade
 import arcade.gui
 
-
 # Constants
 SCREEN_WIDTH = 1366
 SCREEN_HEIGHT = 768
@@ -15,7 +14,7 @@ CHARACTER_SCALING = 1.3
 
 # How fast to move, and how fast to run the animation
 MOVEMENT_SPEED = 5
-UPDATES_PER_FRAME = 5
+UPDATES_PER_FRAME = 8
 
 # Constants used to track if the player is facing left or right
 RIGHT_FACING = 0
@@ -42,37 +41,34 @@ class PlayerCharacter(arcade.Sprite):
 
         self.character_face_direction = RIGHT_FACING
 
-
         # Used for flipping between image sequences
 
-        self.cur_texture = 0
+        self.cur_walk_texture = 0
 
+        self.cur_idle_texture = 0
 
         self.scale = CHARACTER_SCALING
 
         # --- Load Textures ---
 
-
         # Load textures for idle standing
 
-        self.idle_texture_pair = load_texture_pair(f"./resources/Martial Hero 2/Frames/Idle/0.png")
+        self.idle_textures = []
+        for i in range(4):
+            texture = load_texture_pair(f"./resources/Martial Hero 2/Frames/Idle/{i}.png")
 
-
+            self.idle_textures.append(texture)
 
         # Load textures for walking
 
         self.walk_textures = []
 
         for i in range(8):
-
             texture = load_texture_pair(f"./resources/Martial Hero 2/Frames/Run/{i}.png")
 
             self.walk_textures.append(texture)
 
-
-
     def update_animation(self, delta_time: float = 1 / 60):
-
 
         # Figure out if we need to flip face left or right
 
@@ -84,27 +80,31 @@ class PlayerCharacter(arcade.Sprite):
 
             self.character_face_direction = RIGHT_FACING
 
-
-
         # Idle animation
 
         if self.change_x == 0 and self.change_y == 0:
 
-            self.texture = self.idle_texture_pair[self.character_face_direction]
+            self.cur_walk_texture += 1
+
+            if self.cur_walk_texture > 3 * UPDATES_PER_FRAME:
+                self.cur_walk_texture = 0
+
+            frame = self.cur_walk_texture // UPDATES_PER_FRAME
+
+            direction = self.character_face_direction
+
+            self.texture = self.idle_textures[frame][direction]
 
             return
 
-
-
         # Walking animation
 
-        self.cur_texture += 1
+        self.cur_walk_texture += 1
 
-        if self.cur_texture > 7 * UPDATES_PER_FRAME:
+        if self.cur_walk_texture > 7 * UPDATES_PER_FRAME:
+            self.cur_walk_texture = 0
 
-            self.cur_texture = 0
-
-        frame = self.cur_texture // UPDATES_PER_FRAME
+        frame = self.cur_walk_texture // UPDATES_PER_FRAME
 
         direction = self.character_face_direction
 
@@ -208,7 +208,6 @@ class GameView(arcade.View):
         self.clear()
 
         # Draw all the sprites.
-        self.coin_list.draw()
         self.player_list.draw()
 
     def on_key_press(self, key, modifiers):
@@ -242,7 +241,6 @@ class GameView(arcade.View):
         # Update the players animation
 
         self.player_list.update_animation()
-
 
     def on_show_view(self):
         self.setup()
