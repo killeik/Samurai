@@ -153,11 +153,11 @@ class MenuView(arcade.View):
 
     def on_click_start(self, event):
         game_view = GameView()
-        game_view.setup()
         self.window.show_view(game_view)
 
     def on_click_settings(self, event):
-        print("Settings:", event)
+        settings_view = SettingsView()
+        self.window.show_view(settings_view)
 
     def on_click_quit(self, event):
         arcade.exit()
@@ -169,6 +169,63 @@ class MenuView(arcade.View):
         # Code to draw the screen goes here
         self.manager.draw()
 
+
+class SettingsView(arcade.View):
+    """
+    Class that manages the settings view of menu.
+    """
+
+    def __init__(self):
+        # Call the parent class and set up the window
+        super().__init__()
+
+        # Initialize UIManger to handle UI
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+
+        # Set background color
+        arcade.set_background_color(arcade.color.GRAY)
+
+        # Create a horizontal BoxGroup to align buttons
+        self.h_box = arcade.gui.UIBoxLayout(vertical=False)
+
+        # Create the buttons
+        to_menu_button = arcade.gui.UIFlatButton(text="<< Back to Menu", width=250, height=40)
+        self.h_box.add(to_menu_button.with_space_around(left=20, top=10, right=1))
+        to_menu_button.on_click = self.on_click_start
+
+        general_button = arcade.gui.UIFlatButton(text="General", width=250, height=40)
+        self.h_box.add(general_button.with_space_around(top=10, right=1))
+        general_button.on_click = self.on_click_general
+
+        control_button = arcade.gui.UIFlatButton(text="Control", width=250, height=40)
+        self.h_box.add(control_button.with_space_around(top=10))
+        control_button.on_click = self.on_click_control
+
+        # Create a widget to hold the v_box widget, that will center the buttons
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="left",
+                anchor_y="top",
+                child=self.h_box)
+        )
+
+    def on_click_start(self, event):
+        menu_view = MenuView()
+        self.window.show_view(menu_view)
+
+    def on_click_general(self, event):
+        print("Settings:", event)
+
+    def on_click_control(self, event):
+        pass
+
+    def on_draw(self):
+        """Render the screen."""
+
+        self.clear()
+        # Code to draw the screen goes here
+        self.manager.draw()
 
 class GameView(arcade.View):
     """
